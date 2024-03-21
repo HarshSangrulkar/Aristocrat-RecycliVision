@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Live Analysis - RECYCLiVISION</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Include custom CSS -->
+    <link
+      href="{{ url_for('static', filename='css/main.css') }}"
+      rel="stylesheet"
+    />
+    <style>
+      .bg-dark {
+        background-color: #1a1552 !important;
+      }
+
+      #result {
+        color: #1a1552;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <div class="navbar">
+        <div class="logo">
+          <!-- <img src="images/logo.png" alt="" /> -->
+        </div>
+        <ul class="menu">
+          <li><a href="/">Home</a></li>
+          <li><a href="/upload">Upload</a></li>
+          <li><a href="/liveanalysis">Live Analysis</a></li>
+          <li><a href="/chatbot">Chat Bot</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Content for live analysis page -->
+    <div class="container">
+      <div id="content" style="margin-top: 2em">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <h1>Live Waste Classification</h1>
+              <div id="video-container">
+                <video
+                  id="video"
+                  width="400"
+                  height="300"
+                  autoplay
+                  playsinline
+                  style="display: none; transform: scaleX(-1)"
+                ></video>
+              </div>
+              <button id="startButton" onclick="startCamera()">
+                <i class="fas fa-video"></i> Start Camera
+              </button>
+              <button
+                id="stopButton"
+                onclick="stopCamera()"
+                style="display: none"
+              >
+                <i class="fas fa-stop"></i> Stop Camera
+              </button>
+
+              <!-- Display classification result -->
+              <h3 id="classificationResult"></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <h1>Live Waste Classification</h1>
+    <div id="video-container">
+      <video
+        id="video"
+        width="640"
+        height="480"
+        autoplay
+        playsinline
+        style="display: none; transform: scaleX(-1)"
+      ></video>
+    </div>
+    <button id="startButton" onclick="startCamera()">
+      <i class="fas fa-video"></i> Start Camera
+    </button>
+    <button id="stopButton" onclick="stopCamera()" style="display: none">
+      <i class="fas fa-stop"></i> Stop Camera
+    </button>
+
+    Display classification result
+    <div id="classificationResult"></div> -->
+
+    <script>
+      let stream = null;
+      let intervalId = null;
+
+      async function startCamera() {
+        const videoElement = document.getElementById("video");
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          videoElement.srcObject = stream;
+          videoElement.style.display = "block";
+          document.getElementById("startButton").style.display = "none";
+          document.getElementById("stopButton").style.display = "inline-block";
+          // Start sending video stream only if camera is successfully accessed
+          intervalId = setInterval(sendVideoStream, 1000); // Adjust interval as needed
+        } catch (error) {
+          console.error("Error accessing camera:", error);
+          alert(
+            "Error accessing camera. Please make sure your camera is connected and accessible."
+          );
+        }
+      }
+
+      function stopCamera() {
+        if (stream) {
+          const videoTracks = stream.getVideoTracks();
+          videoTracks.forEach((track) => track.stop());
+          stream = null;
+          clearInterval(intervalId); // Stop sending video stream
+          document.getElementById("video").style.display = "none";
+          document.getElementById("startButton").style.display = "inline-block";
+          document.getElementById("stopButton").style.display = "none";
+        }
+      }
+
+      // Function to send video stream to Flask server for classification
+      // function sendVideoStream() {
+      //     const videoElement = document.getElementById('video');
+
+      //     // Check if the video stream is active
+      //     if (!videoElement.srcObject) {
+      //         return;
+      //     }
+
+      //     const canvas = document.createElement('canvas');
+      //     canvas.width = videoElement.videoWidth;
+      //     canvas.height = videoElement.videoHeight;
+      //     const ctx = canvas.getContext('2d');
+      //     ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+      //     const imageData = canvas.toDataURL('image/jpeg');
+      //     fetch('/classify', {
+      //         method: 'POST',
+      //         headers: {
+      //             'Content-Type': 'application/json',
+      //         },
+      //         body: JSON.stringify({ image: imageData }),
+      //     })
+      //         .then(response => response.json())
+      //         .then(data => {
+      //             console.log('Waste classification result:', data.result);
+      //             // Display the classification result on the webpage as needed
+      //         })
+      //         .catch(error => {
+      //             console.error('Error sending video stream:', error);
+      //         });
+      // }
+
+      function sendVideoStream() {
+        const video = document.getElementById("video");
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas
+          .getContext("2d")
+          .drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(function (blob) {
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = function () {
+            const base64data = reader.result;
+
+            fetch("/classify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ image: base64data }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                document.getElementById("classificationResult").textContent =
+                  "Waste classification is: " + data.result;
+              })
+              .catch((error) => {
+                console.error("Error sending video stream:", error);
+              });
+          };
+        }, "image/jpeg");
+      }
+      setInterval(sendVideoStream, 10000);
+    </script>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>

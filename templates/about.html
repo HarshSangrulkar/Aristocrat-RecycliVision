@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Upload - RECYCLiVISION</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='css/main.css') }}"
+      rel="stylesheet"
+    />
+    <style>
+      .bg-dark {
+        background-color: #1a1552 !important;
+      }
+
+      #result {
+        color: #1a1552;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <div class="navbar">
+        <div class="logo">
+          <!-- <img src="D:/Downloads/Data Science/Waste 3/waste2.png" alt="img2" /> -->
+        </div>
+        <ul class="menu">
+          <li class="nav-item active"><a href="/">Home</a></li>
+          <li><a href="/upload">Upload</a></li>
+          <li><a href="/liveanalysis">Live Analysis</a></li>
+          <li><a href="/chatbot">Chat Bot</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div>
+      <p>
+        Imagine a smart waste segregation system that effortlessly sorts through
+        your trash, making recycling and disposal a breeze. Our innovative
+        solution utilizes cutting-edge deep learning technology to analyze waste
+        items as they're disposed of, seamlessly categorizing them into
+        recyclable, organic, and non-recyclable materials, among other
+        customizable classifications. <br /><br />When you toss an item into the
+        bin, our system goes to work, capturing an image or description of the
+        waste and quickly determining its category. Based on this
+        classification, it generates a personalized workflow, guiding you on the
+        best course of action for each item. Whether it's recycling that plastic
+        bottle, composting food scraps, or properly disposing of hazardous
+        materials, our system ensures that every item is handled responsibly.
+        <br /><br />Not only does our product simplify waste management for
+        households and businesses alike, but it also promotes environmental
+        sustainability by encouraging proper waste disposal practices. With its
+        user-friendly interface and automated decision-making capabilities, our
+        waste segregation system is paving the way towards a
+        cleaner, greener future
+      </p>
+    </div>
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+  <footer>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </footer>
+</html>

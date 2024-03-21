@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generate Disposal Instructions</title>
+    <link
+      href="{{ url_for('static', filename='css/main.css') }}"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url("https://www.orillia.ca/en/living-here/resources/Environmental_Services/Waste-Diversion-Webpage-Banner.jpg")
+          no-repeat center center fixed;
+        background-size: cover;
+        color: #495057;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 40px 20px; /* Increased vertical padding */
+        background-color: rgba(255, 255, 255, 0.9); /* Lighter background */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        font-size: 18px;
+      }
+
+      h1 {
+        font-size: 28px;
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      textarea {
+        width: calc(100% - 40px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 2px solid #ced4da;
+        border-radius: 4px;
+        resize: vertical;
+        transition: border-color 0.2s;
+      }
+
+      textarea:focus {
+        border-color: #80bdff;
+        outline: none;
+      }
+
+      button[type="submit"] {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #218838;
+      }
+
+      #response {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .response-message {
+        padding: 10px;
+        background-color: #e2e3e5;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+      }
+
+      /* Add your logo styles here */
+      /* .logo {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 100px; 
+      } */
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="navbar">
+        <div class="logo">
+          <!-- <img src="images/logo.png" alt="" /> -->
+        </div>
+        <ul class="menu">
+          <li><a href="/">Home</a></li>
+          <li><a href="/upload">Upload</a></li>
+          <li><a href="/liveanalysis">Live Analysis</a></li>
+          <li><a href="/chatbot">Chat Bot</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1>Submit a Description of Waste for Disposal Instructions</h1>
+      <form action="/generate_response" method="post">
+        <textarea
+          name="user_input"
+          rows="4"
+          cols="50"
+          placeholder="Enter description of the waste here..."
+        ></textarea>
+        <br />
+        <button type="submit">Submit</button>
+      </form>
+      <div id="response"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      $("form").on("submit", function (event) {
+        event.preventDefault(); // Prevent the form from submitting via the browser
+        $.ajax({
+          url: "/generate_response",
+          data: $("form").serialize(),
+          type: "POST",
+          success: function (response) {
+            $("#response").html("<p>" + response.response + "</p>");
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
