@@ -1,0 +1,5 @@
+tensorflow==2.7.0  # Specific version of TensorFlow
+keras==2.7.0       # Specific version of Keras
+pillow             # Required for image processing
+numpy              # Required for numerical operations
+gunicorn           # Web server for deploying your application
